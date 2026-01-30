@@ -13,6 +13,29 @@ enum UserRole {
   CUSTOMER
 }
 
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_ON_CUSTOMER
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TicketCategory {
+  GENERAL
+  LOGIN
+  PAYMENT
+  BUG
+  OTHER
+}
+
 model User {
   id           String    @id @default(cuid())
   email        String    @unique
@@ -23,7 +46,10 @@ model User {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
-  sessions     Session[]
+  sessions         Session[]
+  createdTickets   Ticket[]  @relation("TicketCreatedBy")
+  assignedTickets  Ticket[]  @relation("TicketAssignedTo")
+  teamMemberships  TeamMember[]
 }
 
 model Session {
@@ -41,4 +67,64 @@ model Session {
 
   @@index([userId])
   @@index([expiresAt])
+}
+
+model Team {
+  id        String      @id @default(cuid())
+  name      String      @unique
+  isActive  Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  members   TeamMember[]
+  tickets   Ticket[]
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  teamId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@index([userId])
+}
+
+model Ticket {
+  id              String         @id @default(cuid())
+  ticketNo        Int            @unique @default(autoincrement())
+
+  title           String
+  description     String
+  category        TicketCategory @default(GENERAL)
+  priority        TicketPriority @default(MEDIUM)
+  status          TicketStatus   @default(OPEN)
+  tags            String[]       @default([])
+
+  createdById     String
+  createdBy       User           @relation("TicketCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  assignedAgentId String?
+  assignedAgent   User?          @relation("TicketAssignedTo", fields: [assignedAgentId], references: [id], onDelete: SetNull)
+
+  teamId          String?
+  team            Team?          @relation(fields: [teamId], references: [id], onDelete: SetNull)
+
+  firstResponseAt DateTime?
+  resolvedAt      DateTime?
+  closedAt        DateTime?
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([status])
+  @@index([priority])
+  @@index([category])
+  @@index([createdById])
+  @@index([assignedAgentId])
+  @@index([teamId])
+  @@index([createdAt])
 }

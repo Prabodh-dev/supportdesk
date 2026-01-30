@@ -2,22 +2,38 @@
 node_modules/
 .pnp
 .pnp.js
+.pnpm-store/
+.yarn/
+!.yarn/releases
+!.yarn/plugins
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
 
 # Testing
 coverage/
 *.lcov
 .nyc_output
+test-results/
+playwright-report/
 
 # Build outputs
 dist/
 build/
 out/
 *.tsbuildinfo
+.tsbuildinfo
+apps/*/dist/
+apps/*/build/
+apps/api/dist/
+apps/web/.next/
+apps/web/out/
 
 # Next.js
 .next/
-apps/web/.next/
-apps/web/out/
+out/
+next-env.d.ts
 
 # Production
 /build
@@ -35,14 +51,22 @@ lerna-debug.log*
 # Environment variables
 .env
 .env.local
+.env.development
 .env.development.local
+.env.test
 .env.test.local
+.env.production
 .env.production.local
 .env*.local
 *.env
+!.env.example
 
 # IDEs and editors
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 .idea/
 *.swp
 *.swo
@@ -53,20 +77,28 @@ lerna-debug.log*
 *.launch
 .settings/
 *.sublime-workspace
+*.sublime-project
 .vs/
+.vscode-test/
 
 # OS
 Thumbs.db
 .AppleDouble
 .LSOverride
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 
 # Docker
 .dockerignore
+docker-compose.override.yml
 
 # Prisma
 apps/api/prisma/migrations/
 apps/api/prisma/*.db
 apps/api/prisma/*.db-journal
+apps/api/prisma/dev.db*
 
 # TypeScript cache
 *.tsbuildinfo
@@ -86,3 +118,9 @@ apps/api/prisma/*.db-journal
 .temp/
 tmp/
 temp/
+*.local
+
+# Lock files (optional - uncomment if not committing)
+# pnpm-lock.yaml
+# package-lock.json
+# yarn.lock

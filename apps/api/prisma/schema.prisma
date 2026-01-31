@@ -36,6 +36,18 @@ enum TicketCategory {
   OTHER
 }
 
+enum MessageType {
+  CUSTOMER_REPLY
+  AGENT_REPLY
+  INTERNAL_NOTE
+  SYSTEM_EVENT
+}
+
+enum AttachmentStatus {
+  PENDING
+  UPLOADED
+}
+
 model User {
   id           String    @id @default(cuid())
   email        String    @unique
@@ -47,9 +59,11 @@ model User {
   updatedAt    DateTime  @updatedAt
 
   sessions         Session[]
-  createdTickets   Ticket[]  @relation("TicketCreatedBy")
-  assignedTickets  Ticket[]  @relation("TicketAssignedTo")
+  createdTickets   Ticket[]        @relation("TicketCreatedBy")
+  assignedTickets  Ticket[]        @relation("TicketAssignedTo")
   teamMemberships  TeamMember[]
+  messages         TicketMessage[]
+  uploads          Attachment[]    @relation("AttachmentUploadedBy")
 }
 
 model Session {
@@ -120,6 +134,9 @@ model Ticket {
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
+  messages        TicketMessage[]
+  attachments     Attachment[]   @relation("AttachmentTicket")
+
   @@index([status])
   @@index([priority])
   @@index([category])
@@ -127,4 +144,51 @@ model Ticket {
   @@index([assignedAgentId])
   @@index([teamId])
   @@index([createdAt])
+}
+
+model TicketMessage {
+  id         String      @id @default(cuid())
+  ticketId   String
+  ticket     Ticket      @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  authorId   String
+  author     User        @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  type       MessageType
+  body       String
+  isInternal Boolean     @default(false)
+
+  createdAt  DateTime    @default(now())
+
+  attachments Attachment[]
+
+  @@index([ticketId])
+  @@index([authorId])
+  @@index([createdAt])
+}
+
+model Attachment {
+  id           String           @id @default(cuid())
+  key          String           @unique
+  status       AttachmentStatus @default(PENDING)
+
+  originalName String
+  mimeType     String
+  sizeBytes    Int
+
+  uploadedById String
+  uploadedBy   User             @relation("AttachmentUploadedBy", fields: [uploadedById], references: [id], onDelete: Restrict)
+
+  ticketId     String?
+  ticket       Ticket?          @relation("AttachmentTicket", fields: [ticketId], references: [id], onDelete: SetNull)
+
+  messageId    String?
+  message      TicketMessage?   @relation(fields: [messageId], references: [id], onDelete: SetNull)
+
+  createdAt    DateTime         @default(now())
+
+  @@index([ticketId])
+  @@index([messageId])
+  @@index([uploadedById])
+  @@index([status])
 }

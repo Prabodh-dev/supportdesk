@@ -3,10 +3,20 @@ import { env } from "./config/env";
 import { logger } from "./config/logger";
 import { prisma } from "./db/prisma";
 import { createApp } from "./app";
+import { startWorker } from "./jobs/worker";
+import { startScheduler } from "./jobs/scheduler";
 
 async function main() {
   await prisma.$connect();
   logger.info("DB connected");
+
+  if (env.REDIS_URL) {
+    startWorker();
+    await startScheduler();
+    logger.info("Worker + Scheduler started");
+  } else {
+    logger.warn("REDIS_URL not set -> jobs disabled");
+  }
 
   const app = createApp();
   app.listen(env.PORT, () => {

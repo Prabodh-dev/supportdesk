@@ -48,6 +48,17 @@ enum AttachmentStatus {
   UPLOADED
 }
 
+enum AuditAction {
+  TICKET_CREATED
+  TICKET_STATUS_CHANGED
+  TICKET_ASSIGNED
+  MESSAGE_CREATED
+  ATTACHMENT_PRESIGNED
+  ATTACHMENT_CONFIRMED
+  LOGIN
+  LOGOUT
+}
+
 model User {
   id           String    @id @default(cuid())
   email        String    @unique
@@ -64,6 +75,7 @@ model User {
   teamMemberships  TeamMember[]
   messages         TicketMessage[]
   uploads          Attachment[]    @relation("AttachmentUploadedBy")
+  auditLogs        AuditLog[]
 }
 
 model Session {
@@ -131,11 +143,16 @@ model Ticket {
   resolvedAt      DateTime?
   closedAt        DateTime?
 
+  // SLA
+  slaFirstResponseMin Int @default(60)   // example: 60 minutes
+  slaResolutionMin    Int @default(1440) // example: 1 day
+
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
   messages        TicketMessage[]
   attachments     Attachment[]   @relation("AttachmentTicket")
+  auditLogs       AuditLog[]
 
   @@index([status])
   @@index([priority])
@@ -191,4 +208,22 @@ model Attachment {
   @@index([messageId])
   @@index([uploadedById])
   @@index([status])
+}
+
+model AuditLog {
+  id        String      @id @default(cuid())
+  action    AuditAction
+  actorId   String?
+  actor     User?       @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  ticketId  String?
+  ticket    Ticket?     @relation(fields: [ticketId], references: [id], onDelete: SetNull)
+
+  meta      Json?
+  createdAt DateTime    @default(now())
+
+  @@index([action])
+  @@index([actorId])
+  @@index([ticketId])
+  @@index([createdAt])
 }

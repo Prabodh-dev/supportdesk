@@ -16,13 +16,11 @@ router.get("/health", (_req, res) => {
 router.use("/auth", authRoutes);
 router.use("/tickets", ticketsRoutes);
 
-// messages nested under tickets
 router.use("/tickets/:ticketId/messages", messagesRoutes);
 
 router.use("/teams", teamsRoutes);
 router.use("/users", usersRoutes);
 
-// attachments
 router.use("/attachments", attachmentsRoutes);
 
 export default router;

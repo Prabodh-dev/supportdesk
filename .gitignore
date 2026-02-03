@@ -103,6 +103,8 @@ apps/api/prisma/dev.db*
 # TypeScript cache
 *.tsbuildinfo
 .eslintcache
+.cache/
+node_modules/.cache/
 
 # Debug
 *.cpuprofile

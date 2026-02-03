@@ -108,7 +108,6 @@ export async function confirmUpload(
 
   await ensureTicketAccess(att.ticketId, actor);
 
-  // Verify object exists in S3
   const client = s3Client();
   try {
     await client.send(

@@ -4,7 +4,7 @@ import { ensureTicketAccess } from "../tickets/ticketAccess";
 function computeType(actorRole: string, isInternal: boolean) {
   if (isInternal) return "INTERNAL_NOTE" as const;
   if (actorRole === "CUSTOMER") return "CUSTOMER_REPLY" as const;
-  return "AGENT_REPLY" as const; // ADMIN treated as agent reply
+  return "AGENT_REPLY" as const;
 }
 
 export async function listMessages(
@@ -59,7 +59,6 @@ export async function createMessage(
 
   const type = computeType(actor.role, isInternal);
 
-  // Validate attachment ownership & ticket binding (optional attachments)
   const attachmentIds = body.attachmentIds ?? [];
   if (attachmentIds.length) {
     const attachments = await prisma.attachment.findMany({
@@ -100,7 +99,6 @@ export async function createMessage(
     }
   }
 
-  // Transaction: create message, bind attachments, update ticket SLA markers
   const result = await prisma.$transaction(async (tx) => {
     const msg = await tx.ticketMessage.create({
       data: {
@@ -127,7 +125,6 @@ export async function createMessage(
       });
     }
 
-    // When agent/admin sends first public reply, set firstResponseAt and move OPEN -> IN_PROGRESS
     const isAgentPublicReply =
       (actor.role === "AGENT" || actor.role === "ADMIN") && !isInternal;
     if (isAgentPublicReply) {

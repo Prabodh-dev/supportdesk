@@ -5,7 +5,7 @@ import {
   signRefreshToken,
   sha256,
   refreshExpiryDate,
-} from "../../utils/tokens";
+} from "../../utils/token";
 
 export async function registerCustomer(input: {
   email: string;

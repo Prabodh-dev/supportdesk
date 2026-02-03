@@ -171,7 +171,6 @@ export async function updateStatus(ticketId: string, status: TicketStatus) {
   if (status === "RESOLVED") data.resolvedAt = new Date();
   if (status === "CLOSED") data.closedAt = new Date();
 
-  // reopening clears close markers (common real-world behavior)
   if (
     status === "OPEN" ||
     status === "IN_PROGRESS" ||
@@ -196,7 +195,6 @@ export async function updateStatus(ticketId: string, status: TicketStatus) {
 }
 
 export async function assign(ticketId: string, body: any) {
-  // allow unassign by passing null
   const data: any = {};
   if ("assignedAgentId" in body) data.assignedAgentId = body.assignedAgentId;
   if ("teamId" in body) data.teamId = body.teamId;

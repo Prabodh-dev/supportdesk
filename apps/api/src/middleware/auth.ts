@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { COOKIE } from "../config/cookies";
-import { verifyAccessToken } from "../utils/tokens";
+import { verifyAccessToken } from "../utils/token";
 
 export function requireAuth(req: Request, _res: Response, next: NextFunction) {
   const token = req.cookies?.[COOKIE.access];

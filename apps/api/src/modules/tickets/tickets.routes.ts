@@ -22,7 +22,6 @@ router.post(
 router.get("/", requireAuth, validate(listTicketsSchema), c.list);
 router.get("/:id", requireAuth, validate(ticketIdSchema), c.getById);
 
-// only AGENT/ADMIN can manage ticket lifecycle + assignments
 router.patch(
   "/:id/status",
   requireAuth,

@@ -9,7 +9,7 @@ export function cookieOptions() {
   const isProd = env.NODE_ENV === "production";
   return {
     httpOnly: true,
-    secure: isProd, // true in prod (https)
+    secure: isProd,
     sameSite: "lax" as const,
     path: "/",
   };

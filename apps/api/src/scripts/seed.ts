@@ -36,7 +36,6 @@ async function seed() {
     },
   });
 
-  // default team
   await prisma.team.upsert({
     where: { name: "Support" },
     update: {},

@@ -2,6 +2,12 @@
   "name": "helpdesk",
   "private": true,
   "packageManager": "pnpm@10.0.0",
+  "pnpm": {
+    "overrides": {
+      "@next/swc": "15.5.7",
+      "@next/swc-win32-x64-msvc": "15.5.7"
+    }
+  },
   "scripts": {
     "dev": "pnpm -r --parallel dev",
     "build": "pnpm -r build",

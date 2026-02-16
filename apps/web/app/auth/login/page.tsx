@@ -42,24 +42,72 @@ export default function LoginPage() {
   }
 
   return (
-    <main>
-      <h2>Login</h2>
-      <form
-        onSubmit={onSubmit}
-        style={{ display: "grid", gap: 10, maxWidth: 360 }}
-      >
-        <input name="email" placeholder="Email" />
-        <input name="password" placeholder="Password" type="password" />
-        <button type="submit">Login</button>
-      </form>
+    <main className="auth">
+      <header className="auth-header reveal">
+        <div>
+          <div className="brand">Helpdesk</div>
+          <p className="helper">Sign in to manage tickets and responses.</p>
+        </div>
+        <a className="btn btn--ghost" href="/">
+          Back home
+        </a>
+      </header>
 
-      <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
-        <button onClick={loadMe}>GET /me</button>
-        <button onClick={logout}>Logout</button>
-      </div>
+      <section className="form-card reveal reveal--delay-1">
+        <h2>Welcome back</h2>
+        <p className="helper">Use your admin or agent credentials.</p>
+        <form onSubmit={onSubmit} className="form-grid">
+          <div>
+            <label className="label" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              placeholder="agent1@helpdesk.local"
+              className="input"
+              autoComplete="email"
+            />
+          </div>
+          <div>
+            <label className="label" htmlFor="password">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              placeholder="Your password"
+              type="password"
+              className="input"
+              autoComplete="current-password"
+            />
+          </div>
+          <div className="actions">
+            <button className="btn btn--primary" type="submit">
+              Sign in
+            </button>
+            <button className="btn btn--ghost" type="button" onClick={loadMe}>
+              Who am I
+            </button>
+            <button className="btn btn--ghost" type="button" onClick={logout}>
+              Log out
+            </button>
+            <a className="btn btn--ghost" href="/dashboard">
+              Go to dashboard
+            </a>
+          </div>
+        </form>
 
-      <p>{msg}</p>
-      <pre>{me ? JSON.stringify(me, null, 2) : ""}</pre>
+        {msg ? (
+          <div className={`msg ${msg.includes("failed") ? "msg--error" : ""}`}>
+            {msg}
+          </div>
+        ) : null}
+
+        {me ? (
+          <pre className="code-block">{JSON.stringify(me, null, 2)}</pre>
+        ) : null}
+      </section>
     </main>
   );
 }

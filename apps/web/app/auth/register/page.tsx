@@ -26,19 +26,78 @@ export default function RegisterPage() {
   }
 
   return (
-    <main>
-      <h2>Register (Customer)</h2>
-      <form
-        onSubmit={onSubmit}
-        style={{ display: "grid", gap: 10, maxWidth: 360 }}
-      >
-        <input name="name" placeholder="Name (optional)" />
-        <input name="email" placeholder="Email" />
-        <input name="password" placeholder="Password (min 8)" type="password" />
-        <button type="submit">Create account</button>
-      </form>
-      <p>{msg}</p>
-      <a href="/auth/login">Go Login</a>
+    <main className="auth">
+      <header className="auth-header reveal">
+        <div>
+          <div className="brand">Helpdesk</div>
+          <p className="helper">
+            Create a customer profile and start a new ticket.
+          </p>
+        </div>
+        <a className="btn btn--ghost" href="/">
+          Back home
+        </a>
+      </header>
+
+      <section className="form-card reveal reveal--delay-1">
+        <h2>Register</h2>
+        <p className="helper">
+          Customer accounts are best for tracking requests and updates.
+        </p>
+        <form onSubmit={onSubmit} className="form-grid">
+          <div>
+            <label className="label" htmlFor="name">
+              Name
+            </label>
+            <input
+              id="name"
+              name="name"
+              placeholder="Your name"
+              className="input"
+              autoComplete="name"
+            />
+          </div>
+          <div>
+            <label className="label" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              placeholder="you@company.com"
+              className="input"
+              autoComplete="email"
+            />
+          </div>
+          <div>
+            <label className="label" htmlFor="password">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              placeholder="Minimum 8 characters"
+              type="password"
+              className="input"
+              autoComplete="new-password"
+            />
+          </div>
+          <div className="actions">
+            <button className="btn btn--primary" type="submit">
+              Create account
+            </button>
+            <a className="btn btn--ghost" href="/auth/login">
+              I already have an account
+            </a>
+          </div>
+        </form>
+
+        {msg ? (
+          <div className={`msg ${msg.includes("failed") ? "msg--error" : ""}`}>
+            {msg}
+          </div>
+        ) : null}
+      </section>
     </main>
   );
 }

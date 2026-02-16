@@ -1,3 +1,5 @@
+import "./globals.css";
+
 export default function RootLayout({
   children,
 }: {
@@ -5,8 +7,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body style={{ fontFamily: "system-ui", margin: 0, padding: 24 }}>
-        {children}
+      <body className="app-body">
+        <div className="bg-orb bg-orb--one" aria-hidden="true" />
+        <div className="bg-orb bg-orb--two" aria-hidden="true" />
+        <div className="bg-grid" aria-hidden="true" />
+        <div className="app-shell">{children}</div>
       </body>
     </html>
   );
